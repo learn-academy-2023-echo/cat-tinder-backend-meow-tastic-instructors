@@ -96,4 +96,47 @@ RSpec.describe "Cats", type: :request do
       expect(cats).to be_empty
     end
   end
+
+  # Validation Request Specs
+  describe "cannot create a cat without valid attributes" do 
+    it "does not create a cat without a name" do 
+      # Create a cat without a name
+      cat_params = {
+        cat: {
+          age: 2,
+          enjoys: 'Long naps on the couch, and a warm fire.',
+          image: 'https://images.unsplash.com/photo-1529778873920-4da4926a72c2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1036&q=80'
+        }
+      }
+      # Send request to server
+      post '/cats', params: cat_params
+      expect(response.status).to eq 422
+      # same test as above just written differently: 
+      # expect(response).to have_http_status(422)
+
+      # Convert the JSON response to Ruby hash
+      cat = JSON.parse(response.body)
+      expect(cat['name']).to include "can't be blank"
+    end
+    
+    it "does not create a cat without a age" do 
+      # Create a cat without a age
+      cat_params = {
+        cat: {
+          name: 'Tobey',
+          enjoys: 'Long naps on the couch, and a warm fire.',
+          image: 'https://images.unsplash.com/photo-1529778873920-4da4926a72c2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1036&q=80'
+        }
+      }
+      # Send request to server
+      post '/cats', params: cat_params
+      expect(response.status).to eq 422
+      # same test as above just written differently: 
+      # expect(response).to have_http_status(422)
+
+      # Convert the JSON response to Ruby hash
+      cat = JSON.parse(response.body)
+      expect(cat['age']).to include "can't be blank"
+    end
+  end
 end
